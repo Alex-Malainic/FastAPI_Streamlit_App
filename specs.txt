@@ -1,0 +1,40 @@
+from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import copy_metadata
+
+datas = [("C:/Users/Alex/AppData/Local/Programs/Python/Python39/Lib/site-packages/streamlit/runtime", "./streamlit/runtime")]
+datas += collect_data_files("streamlit")
+datas += copy_metadata("streamlit")
+
+
+block_cipher = None
+
+
+a = Analysis(
+    ["run.py"],
+    pathex=["."],
+    binaries=[],
+    datas=datas,
+    hiddenimports=["streamlit", "streamlit_extras" , "streamlit_modal", "streamlit.components.v1", "streamlit_extras.chart_container", "streamlit_extras.altex", "streamlit_extras.colored_header", "pyarrow.vendored.version"],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False,
+)
+
+
+
+---------------------------------------------------------------------------
+
+if needed:
+    #datas=[    (
+        "C:/Users/Alex/AppData/Local/Programs/Python/Python39/Lib/site-packages/streamlit/static",
+        "./streamlit/static"
+    )],
+
+#pyinstaller --onefile --additional-hooks-dir=./hooks run.py --clean
+
+#pyinstaller run.spec --clean
