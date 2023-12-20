@@ -3,16 +3,14 @@ import streamlit as st
 st.set_page_config(page_title = "Test Tool", page_icon = ':sun_small_cloud:', layout="wide")
 st.title('Test app - demo test app demo demo :sun_small_cloud:')
 
-import matplotlib.pyplot as plt
-from streamlit_extras.chart_container import chart_container
-from streamlit_extras.altex import line_chart
-from streamlit_extras.colored_header import colored_header
 import pandas as pd
 import datetime
 from streamlit_modal import Modal
 import streamlit.components.v1 as components
+import requests
 
-
+base_url = 'http://127.0.0.1'
+base_port = '8000' 
 
 # ------------------------------------------------------ Settings ---------------------------------------------------------
 
@@ -57,8 +55,21 @@ with st.sidebar:
 example_df = pd.DataFrame({'index': [1,2,3], 'transaction_fk': ['345', '542', '887'], 'nominal': [3545, 7776, 4443]})
 
 if st.session_state.clicked == True:
+    alert = st.toast("Success!", icon='😍')
+    st.info('This is a purely informational message', icon="ℹ️")
+    e = RuntimeError('This is an exception of type RuntimeError')
+    st.exception(e)
+    st.success('This is a success message!', icon="✅")
+    st.warning('This is a warning', icon="⚠️")
     #implemeent modal: if settings were not changed : do you want to run with the current defualt settings?
-    st.data_editor(example_df)
+    symbol = st.text_input("Enter Stock Symbol:", value="AAPL")
+    response = requests.post(f"{base_url}:{base_port}/get_stock", json={"symbol": symbol})
+    if response.status_code == 200:
+        stock_data = response.json()
+        st.write(f"The price of {stock_data['symbol']} is ${stock_data['price']}")
+    else:
+        st.write("Error fetching the stock price")
+
     modal = Modal(
         "Demo Modal", 
         key="demo-modal",
@@ -72,8 +83,9 @@ if st.session_state.clicked == True:
     open_modal = st.button("Open")
 
     if open_modal:
+        
         modal.open()
-        st.write("haha")
+        
     if modal.is_open():
         st.write("haha")
         with modal.container():
